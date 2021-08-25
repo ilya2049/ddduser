@@ -1,6 +1,7 @@
 package memory
 
 import (
+	"ddduser/domain/auth"
 	"ddduser/domain/user"
 )
 
@@ -67,6 +68,16 @@ func (r *UserRepository) Delete(id user.ID) error {
 func (r *UserRepository) Get(id user.ID) (user.User, error) {
 	for _, usr := range r.users {
 		if usr.ID() == id {
+			return usr, nil
+		}
+	}
+
+	return user.User{}, user.ErrUserDoesNotExist
+}
+
+func (r *UserRepository) GetAdmin() (user.User, error) {
+	for _, usr := range r.users {
+		if usr.Role().Level() == auth.RoleLevelAdmin {
 			return usr, nil
 		}
 	}

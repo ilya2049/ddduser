@@ -57,6 +57,10 @@ func (u User) ID() ID {
 	return u.id
 }
 
+func (u User) Name() string {
+	return u.name
+}
+
 func (u User) Role() Role {
 	return u.role
 }
@@ -87,5 +91,6 @@ type Repository interface {
 	Update(User) error
 	Delete(ID) error
 	Get(ID) (User, error)
+	GetAdmin() (User, error)
 	List() ([]User, error)
 }
