@@ -31,3 +31,13 @@ func (r *RoleRepository) GetByLevel(roleLevel auth.RoleLevel) (user.Role, error)
 
 	return user.Role{}, role.ErrRoleDoesNotExist
 }
+
+func (r *RoleRepository) HasRoleWithLevel(roleLevel auth.RoleLevel) (bool, error) {
+	for _, rl := range r.roles {
+		if rl.Level() == roleLevel {
+			return true, nil
+		}
+	}
+
+	return false, nil
+}

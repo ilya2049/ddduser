@@ -42,4 +42,5 @@ func (r Role) ID() ID {
 
 type Repository interface {
 	Add(Role) (ID, error)
+	HasRoleWithLevel(roleLevel auth.RoleLevel) (bool, error)
 }
