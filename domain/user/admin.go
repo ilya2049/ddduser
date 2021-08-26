@@ -22,7 +22,7 @@ type AdminCreator struct {
 	userRepository Repository
 }
 
-func (ac *AdminCreator) NewAdmin(name string) (User, error) {
+func (ac *AdminCreator) CreateAdmin(name string) (User, error) {
 	admin, err := New(name, auth.RoleLevelAdmin, ac.roleRepository)
 	if err != nil {
 		return User{}, err

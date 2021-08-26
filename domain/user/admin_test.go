@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestAdminCreator_NewAdmin(t *testing.T) {
+func TestAdminCreator_CreateAdmin(t *testing.T) {
 	roleRepository := memory.RoleRepository{}
 	_, _ = roleRepository.Add(role.New("Admin", auth.RoleLevelAdmin))
 
@@ -19,11 +19,11 @@ func TestAdminCreator_NewAdmin(t *testing.T) {
 
 	adminCreator := user.NewAdminCreator(&roleRepository, &userRepository)
 
-	userJason, err := adminCreator.NewAdmin("Jason")
+	userJason, err := adminCreator.CreateAdmin("Jason")
 	require.NoError(t, err)
 	assert.Equal(t, auth.RoleLevelAdmin, userJason.Role().Level())
 
-	_, err = adminCreator.NewAdmin("Leslie")
+	_, err = adminCreator.CreateAdmin("Leslie")
 	require.Error(t, err)
 	assert.EqualError(t, user.ErrOnlyOneAdmin, err.Error())
 }
