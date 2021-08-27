@@ -47,3 +47,36 @@ func (ac *AdminCreator) CreateAdmin(name string) (User, error) {
 
 	return User{}, err
 }
+
+type AdminContext struct {
+	admin User
+
+	roleRepository RoleRepository
+}
+
+func (ac *AdminContext) NewUser(
+	name string,
+	roleLevel auth.RoleLevel,
+) (User, error) {
+	if roleLevel == auth.RoleLevelModerator {
+		return ac.admin.NewChildUser(name, roleLevel, ac.roleRepository)
+	}
+
+	return User{}, ErrOperationIsForbiddenForCurrentUser
+}
+
+func (ac *AdminContext) CanUpdateUser(u User) error {
+	if u.Role().Level() == auth.RoleLevelModerator || u.Is(ac.admin) {
+		return nil
+	}
+
+	return ErrOperationIsForbiddenForCurrentUser
+}
+
+func (ac *AdminContext) CanDeleteUser(u User) error {
+	if u.Role().Level() == auth.RoleLevelModerator {
+		return nil
+	}
+
+	return ErrOperationIsForbiddenForCurrentUser
+}

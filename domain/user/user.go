@@ -37,7 +37,7 @@ type User struct {
 	role    Role
 }
 
-func (u User) CreateChildUser(
+func (u User) NewChildUser(
 	name string,
 	roleLevel auth.RoleLevel,
 	roleRepository RoleRepository,
@@ -71,6 +71,14 @@ func (u *User) Identify(id ID) {
 
 func (u *User) Rename(name string) {
 	u.name = name
+}
+
+func (u User) IsOwnedBy(other User) bool {
+	return u.ownerID == other.id
+}
+
+func (u User) Is(other User) bool {
+	return u.id == other.id
 }
 
 func (u *User) ChangeRole(roleLevel auth.RoleLevel, roleRepository RoleRepository) error {
