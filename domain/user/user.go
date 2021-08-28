@@ -6,7 +6,6 @@ import (
 )
 
 var (
-	ErrNameRequired     = errors.New("name is required")
 	ErrUserDoesNotExist = errors.New("user does not exist")
 )
 
