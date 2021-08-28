@@ -34,3 +34,7 @@ func (mc *ModeratorContext) CanDeleteUser(u User) error {
 
 	return ErrOperationIsForbiddenForCurrentUser
 }
+
+func (mc *ModeratorContext) CanReadUser(u User) error {
+	return mc.CanUpdateUser(u)
+}

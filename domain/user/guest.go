@@ -28,3 +28,7 @@ func (gc *GuestContext) CanDeleteUser(u User) error {
 
 	return ErrOperationIsForbiddenForCurrentUser
 }
+
+func (gc *GuestContext) CanReadUser(u User) error {
+	return gc.CanDeleteUser(u)
+}

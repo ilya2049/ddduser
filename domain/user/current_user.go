@@ -12,6 +12,7 @@ type CurrentUser interface {
 	NewUser(string, auth.RoleLevel) (User, error)
 	CanUpdateUser(User) error
 	CanDeleteUser(User) error
+	CanReadUser(User) error
 }
 
 func NewCurrentUserFactory(roleRepository RoleRepository) *CurrentUserFactory {

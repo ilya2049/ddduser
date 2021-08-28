@@ -80,3 +80,7 @@ func (ac *AdminContext) CanDeleteUser(u User) error {
 
 	return ErrOperationIsForbiddenForCurrentUser
 }
+
+func (ac *AdminContext) CanReadUser(_ User) error {
+	return nil
+}
