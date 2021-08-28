@@ -24,30 +24,28 @@ type CurrentUserFactory struct {
 	roleRepository RoleRepository
 }
 
-var ErrUnknownRoleOfCurrentUser = errors.New("role of the current user is unknown")
-
-func (f *CurrentUserFactory) NewCurrentUser(u User) (CurrentUser, error) {
+func (f *CurrentUserFactory) NewCurrentUser(u User) CurrentUser {
 	switch u.Role().Level() {
 	case auth.RoleLevelAdmin:
 		return &AdminContext{
 			admin: u,
 
 			roleRepository: f.roleRepository,
-		}, nil
+		}
 
 	case auth.RoleLevelModerator:
 		return &ModeratorContext{
 			moderator: u,
 
 			roleRepository: f.roleRepository,
-		}, nil
+		}
 
 	case auth.RoleLevelGuest:
 		return &GuestContext{
 			guest: u,
-		}, nil
+		}
 
 	default:
-		return nil, ErrUnknownRoleOfCurrentUser
+		panic("role of the current user is unknown")
 	}
 }
