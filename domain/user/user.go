@@ -81,17 +81,6 @@ func (u User) Is(other User) bool {
 	return u.id == other.id
 }
 
-func (u *User) ChangeRole(roleLevel auth.RoleLevel, roleRepository RoleRepository) error {
-	role, err := roleRepository.GetByLevel(roleLevel)
-	if err != nil {
-		return err
-	}
-
-	u.role = role
-
-	return nil
-}
-
 type ID = int
 
 type Repository interface {

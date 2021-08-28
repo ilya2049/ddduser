@@ -76,10 +76,7 @@ func TestUserRepository_Update(t *testing.T) {
 	userSam, err = userRepository.Get(userSamID)
 	require.NoError(t, err)
 
-	assert.Equal(t, auth.RoleLevelGuest, userSam.Role().Level())
-
-	err = userSam.ChangeRole(auth.RoleLevelModerator, &roleRepository)
-	require.NoError(t, err)
+	userSam.Rename("Samantha")
 
 	err = userRepository.Update(userSam)
 	require.NoError(t, err)
@@ -87,5 +84,5 @@ func TestUserRepository_Update(t *testing.T) {
 	userSam, err = userRepository.Get(userSamID)
 	require.NoError(t, err)
 
-	assert.Equal(t, auth.RoleLevelModerator, userSam.Role().Level())
+	assert.Equal(t, "Samantha", userSam.Name())
 }
