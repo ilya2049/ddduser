@@ -2,6 +2,7 @@ package memory_test
 
 import (
 	"ddduser/db/memory"
+	"ddduser/dict"
 	"ddduser/domain/auth"
 	"ddduser/domain/role"
 	"ddduser/domain/user"
@@ -15,13 +16,13 @@ func TestUserRepository_List(t *testing.T) {
 	userRepository := memory.UserRepository{}
 	roleRepository := memory.RoleRepository{}
 
-	_, _ = roleRepository.Add(role.New("Moderator", auth.RoleLevelModerator))
-	_, _ = roleRepository.Add(role.New("Arbitrary user", auth.RoleLevelGuest))
+	_, _ = roleRepository.Add(role.New(dict.RoleModerator, auth.RoleLevelModerator))
+	_, _ = roleRepository.Add(role.New(dict.RoleGuest, auth.RoleLevelGuest))
 
-	userSam, err := user.New("Sam", auth.RoleLevelModerator, &roleRepository)
+	userSam, err := user.New(dict.NameSam, auth.RoleLevelModerator, &roleRepository)
 	require.NoError(t, err)
 
-	userJames, err := user.New("James", auth.RoleLevelGuest, &roleRepository)
+	userJames, err := user.New(dict.NameJames, auth.RoleLevelGuest, &roleRepository)
 	require.NoError(t, err)
 
 	userSamID, _ := userRepository.Add(userSam)
@@ -39,13 +40,13 @@ func TestUserRepository_Delete(t *testing.T) {
 	userRepository := memory.UserRepository{}
 	roleRepository := memory.RoleRepository{}
 
-	_, _ = roleRepository.Add(role.New("Moderator", auth.RoleLevelModerator))
-	_, _ = roleRepository.Add(role.New("Arbitrary user", auth.RoleLevelGuest))
+	_, _ = roleRepository.Add(role.New(dict.RoleModerator, auth.RoleLevelModerator))
+	_, _ = roleRepository.Add(role.New(dict.RoleGuest, auth.RoleLevelGuest))
 
-	userSam, err := user.New("Sam", auth.RoleLevelModerator, &roleRepository)
+	userSam, err := user.New(dict.NameSam, auth.RoleLevelModerator, &roleRepository)
 	require.NoError(t, err)
 
-	userJames, err := user.New("James", auth.RoleLevelGuest, &roleRepository)
+	userJames, err := user.New(dict.NameJames, auth.RoleLevelGuest, &roleRepository)
 	require.NoError(t, err)
 
 	userSamID, _ := userRepository.Add(userSam)
@@ -65,10 +66,10 @@ func TestUserRepository_Update(t *testing.T) {
 	userRepository := memory.UserRepository{}
 	roleRepository := memory.RoleRepository{}
 
-	_, _ = roleRepository.Add(role.New("Moderator", auth.RoleLevelModerator))
-	_, _ = roleRepository.Add(role.New("Arbitrary user", auth.RoleLevelGuest))
+	_, _ = roleRepository.Add(role.New(dict.RoleModerator, auth.RoleLevelModerator))
+	_, _ = roleRepository.Add(role.New(dict.RoleGuest, auth.RoleLevelGuest))
 
-	userSam, err := user.New("Sam", auth.RoleLevelGuest, &roleRepository)
+	userSam, err := user.New(dict.NameSam, auth.RoleLevelGuest, &roleRepository)
 	require.NoError(t, err)
 
 	userSamID, _ := userRepository.Add(userSam)
@@ -76,7 +77,7 @@ func TestUserRepository_Update(t *testing.T) {
 	userSam, err = userRepository.Get(userSamID)
 	require.NoError(t, err)
 
-	userSam.Rename("Samantha")
+	userSam.Rename(dict.NameSamantha)
 
 	err = userRepository.Update(userSam)
 	require.NoError(t, err)
@@ -84,5 +85,5 @@ func TestUserRepository_Update(t *testing.T) {
 	userSam, err = userRepository.Get(userSamID)
 	require.NoError(t, err)
 
-	assert.Equal(t, "Samantha", userSam.Name())
+	assert.Equal(t, dict.NameSamantha, userSam.Name())
 }

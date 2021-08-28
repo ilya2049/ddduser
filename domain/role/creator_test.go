@@ -2,6 +2,7 @@ package role_test
 
 import (
 	"ddduser/db/memory"
+	"ddduser/dict"
 	"ddduser/domain/auth"
 	"ddduser/domain/role"
 	"testing"
@@ -14,9 +15,9 @@ func TestCreator_CreateRole(t *testing.T) {
 	roleRepository := memory.RoleRepository{}
 	factory := role.NewCreator(&roleRepository)
 
-	roleAdmin := role.New("Administrator", auth.RoleLevelAdmin)
-	roleModerator := role.New("Moderator", auth.RoleLevelModerator)
-	roleGuest := role.New("Arbitrary user", auth.RoleLevelGuest)
+	roleAdmin := role.New(dict.RoleAdmin, auth.RoleLevelAdmin)
+	roleModerator := role.New(dict.RoleModerator, auth.RoleLevelModerator)
+	roleGuest := role.New(dict.RoleGuest, auth.RoleLevelGuest)
 
 	err := factory.CreateRole(roleAdmin)
 	require.NoError(t, err)
