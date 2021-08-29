@@ -16,9 +16,9 @@ func TestUserRepository_List(t *testing.T) {
 	userRepository := memory.UserRepository{}
 	roleRepository := memory.RoleRepository{}
 
-	_, _ = roleRepository.Add(role.New(dict.RoleAdmin, auth.RoleLevelAdmin))
-	_, _ = roleRepository.Add(role.New(dict.RoleModerator, auth.RoleLevelModerator))
-	_, _ = roleRepository.Add(role.New(dict.RoleGuest, auth.RoleLevelGuest))
+	roleCreator := role.NewCreator(&roleRepository)
+	err := roleCreator.CreateTestRoles()
+	require.NoError(t, err)
 
 	adminCreator := user.NewAdminCreator(&roleRepository, &userRepository)
 
@@ -56,9 +56,9 @@ func TestUserRepository_Delete(t *testing.T) {
 	userRepository := memory.UserRepository{}
 	roleRepository := memory.RoleRepository{}
 
-	_, _ = roleRepository.Add(role.New(dict.RoleAdmin, auth.RoleLevelAdmin))
-	_, _ = roleRepository.Add(role.New(dict.RoleModerator, auth.RoleLevelModerator))
-	_, _ = roleRepository.Add(role.New(dict.RoleGuest, auth.RoleLevelGuest))
+	roleCreator := role.NewCreator(&roleRepository)
+	err := roleCreator.CreateTestRoles()
+	require.NoError(t, err)
 
 	adminCreator := user.NewAdminCreator(&roleRepository, &userRepository)
 
@@ -88,9 +88,9 @@ func TestUserRepository_Update(t *testing.T) {
 	userRepository := memory.UserRepository{}
 	roleRepository := memory.RoleRepository{}
 
-	_, _ = roleRepository.Add(role.New(dict.RoleAdmin, auth.RoleLevelAdmin))
-	_, _ = roleRepository.Add(role.New(dict.RoleModerator, auth.RoleLevelModerator))
-	_, _ = roleRepository.Add(role.New(dict.RoleGuest, auth.RoleLevelGuest))
+	roleCreator := role.NewCreator(&roleRepository)
+	err := roleCreator.CreateTestRoles()
+	require.NoError(t, err)
 
 	adminCreator := user.NewAdminCreator(&roleRepository, &userRepository)
 

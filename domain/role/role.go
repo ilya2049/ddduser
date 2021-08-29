@@ -9,6 +9,18 @@ var (
 	ErrRoleDoesNotExist = errors.New("role does not exist")
 )
 
+func newTestAdmin() Role {
+	return New("Administrator", auth.RoleLevelAdmin)
+}
+
+func newTestModerator() Role {
+	return New("Moderator", auth.RoleLevelModerator)
+}
+
+func newTestGuest() Role {
+	return New("Arbitrary user", auth.RoleLevelGuest)
+}
+
 func New(name string, level auth.RoleLevel) Role {
 	return Role{
 		name:  name,

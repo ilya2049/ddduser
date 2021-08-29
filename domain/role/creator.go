@@ -14,6 +14,22 @@ type Creator struct {
 	roleRepository Repository
 }
 
+func (f *Creator) CreateTestRoles() error {
+	roles := []Role{
+		newTestAdmin(),
+		newTestModerator(),
+		newTestGuest(),
+	}
+
+	for _, role := range roles {
+		if err := f.CreateRole(role); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (f *Creator) CreateRole(rl Role) error {
 	ok, err := f.roleRepository.HasRoleWithLevel(rl.Level())
 	if err != nil {
