@@ -2,6 +2,12 @@ package user
 
 import "context"
 
+func NewCRUDService(userRepository Repository) *CRUDService {
+	return &CRUDService{
+		userRepository: userRepository,
+	}
+}
+
 type CRUDService struct {
 	userRepository Repository
 }
