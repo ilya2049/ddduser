@@ -23,7 +23,7 @@ type AdminCreator struct {
 }
 
 func (ac *AdminCreator) CreateAdmin(name string) (User, error) {
-	admin, err := New(name, auth.RoleLevelAdmin, ac.roleRepository)
+	admin, err := NewAdmin(name, ac.roleRepository)
 	if err != nil {
 		return User{}, err
 	}

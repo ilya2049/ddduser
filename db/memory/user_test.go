@@ -16,13 +16,19 @@ func TestUserRepository_List(t *testing.T) {
 	userRepository := memory.UserRepository{}
 	roleRepository := memory.RoleRepository{}
 
+	_, _ = roleRepository.Add(role.New(dict.RoleAdmin, auth.RoleLevelAdmin))
 	_, _ = roleRepository.Add(role.New(dict.RoleModerator, auth.RoleLevelModerator))
 	_, _ = roleRepository.Add(role.New(dict.RoleGuest, auth.RoleLevelGuest))
 
-	userSam, err := user.New(dict.NameSam, auth.RoleLevelModerator, &roleRepository)
+	adminCreator := user.NewAdminCreator(&roleRepository, &userRepository)
+
+	userAdmin, err := adminCreator.CreateAdmin(dict.NameLeslie)
 	require.NoError(t, err)
 
-	userJames, err := user.New(dict.NameJames, auth.RoleLevelGuest, &roleRepository)
+	userSam, err := userAdmin.NewChildUser(dict.NameSam, auth.RoleLevelModerator, &roleRepository)
+	require.NoError(t, err)
+
+	userJames, err := userSam.NewChildUser(dict.NameJames, auth.RoleLevelGuest, &roleRepository)
 	require.NoError(t, err)
 
 	userSamID, _ := userRepository.Add(userSam)
@@ -30,23 +36,39 @@ func TestUserRepository_List(t *testing.T) {
 
 	users, _ := userRepository.List()
 
-	userSam.Identify(userSamID)
-	userJames.Identify(userJamesID)
+	const (
+		usersInRepository = 3
+	)
 
-	assert.Equal(t, []user.User{userSam, userJames}, users)
+	var (
+		userAdminIdx = userAdmin.ID() - 1
+		userSamIdx   = userSamID - 1
+		userJamesIdx = userJamesID - 1
+	)
+
+	require.Len(t, users, usersInRepository)
+	assert.Equal(t, users[userAdminIdx].Name(), userAdmin.Name())
+	assert.Equal(t, users[userSamIdx].Name(), userSam.Name())
+	assert.Equal(t, users[userJamesIdx].Name(), userJames.Name())
 }
 
 func TestUserRepository_Delete(t *testing.T) {
 	userRepository := memory.UserRepository{}
 	roleRepository := memory.RoleRepository{}
 
+	_, _ = roleRepository.Add(role.New(dict.RoleAdmin, auth.RoleLevelAdmin))
 	_, _ = roleRepository.Add(role.New(dict.RoleModerator, auth.RoleLevelModerator))
 	_, _ = roleRepository.Add(role.New(dict.RoleGuest, auth.RoleLevelGuest))
 
-	userSam, err := user.New(dict.NameSam, auth.RoleLevelModerator, &roleRepository)
+	adminCreator := user.NewAdminCreator(&roleRepository, &userRepository)
+
+	userAdmin, err := adminCreator.CreateAdmin(dict.NameLeslie)
 	require.NoError(t, err)
 
-	userJames, err := user.New(dict.NameJames, auth.RoleLevelGuest, &roleRepository)
+	userSam, err := userAdmin.NewChildUser(dict.NameSam, auth.RoleLevelModerator, &roleRepository)
+	require.NoError(t, err)
+
+	userJames, err := userSam.NewChildUser(dict.NameJames, auth.RoleLevelGuest, &roleRepository)
 	require.NoError(t, err)
 
 	userSamID, _ := userRepository.Add(userSam)
@@ -66,10 +88,16 @@ func TestUserRepository_Update(t *testing.T) {
 	userRepository := memory.UserRepository{}
 	roleRepository := memory.RoleRepository{}
 
+	_, _ = roleRepository.Add(role.New(dict.RoleAdmin, auth.RoleLevelAdmin))
 	_, _ = roleRepository.Add(role.New(dict.RoleModerator, auth.RoleLevelModerator))
 	_, _ = roleRepository.Add(role.New(dict.RoleGuest, auth.RoleLevelGuest))
 
-	userSam, err := user.New(dict.NameSam, auth.RoleLevelGuest, &roleRepository)
+	adminCreator := user.NewAdminCreator(&roleRepository, &userRepository)
+
+	userAdmin, err := adminCreator.CreateAdmin(dict.NameLeslie)
+	require.NoError(t, err)
+
+	userSam, err := userAdmin.NewChildUser(dict.NameSam, auth.RoleLevelModerator, &roleRepository)
 	require.NoError(t, err)
 
 	userSamID, _ := userRepository.Add(userSam)

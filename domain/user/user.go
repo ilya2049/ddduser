@@ -9,7 +9,14 @@ var (
 	ErrUserDoesNotExist = errors.New("user does not exist")
 )
 
-func New(
+func NewAdmin(
+	name string,
+	roleRepository RoleRepository,
+) (User, error) {
+	return newUser(name, auth.RoleLevelAdmin, roleRepository)
+}
+
+func newUser(
 	name string,
 	roleLevel auth.RoleLevel,
 	roleRepository RoleRepository,
@@ -41,7 +48,7 @@ func (u User) NewChildUser(
 	roleLevel auth.RoleLevel,
 	roleRepository RoleRepository,
 ) (User, error) {
-	u, err := New(name, roleLevel, roleRepository)
+	u, err := newUser(name, roleLevel, roleRepository)
 
 	if err != nil {
 		return User{}, err
