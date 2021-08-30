@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"ddduser/domain/auth"
 )
 
@@ -21,5 +22,5 @@ func (r Role) Level() auth.RoleLevel {
 }
 
 type RoleRepository interface {
-	GetByLevel(roleLevel auth.RoleLevel) (Role, error)
+	GetByLevel(context.Context, auth.RoleLevel) (Role, error)
 }

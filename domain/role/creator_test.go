@@ -1,6 +1,7 @@
 package role_test
 
 import (
+	"context"
 	"ddduser/db/memory"
 	"ddduser/dict"
 	"ddduser/domain/auth"
@@ -19,24 +20,26 @@ func TestCreator_CreateRole(t *testing.T) {
 	roleModerator := role.New(dict.RoleModerator, auth.RoleLevelModerator)
 	roleGuest := role.New(dict.RoleGuest, auth.RoleLevelGuest)
 
-	err := factory.CreateRole(roleAdmin)
+	ctx := context.Background()
+
+	err := factory.CreateRole(ctx, roleAdmin)
 	require.NoError(t, err)
 
-	err = factory.CreateRole(roleAdmin)
+	err = factory.CreateRole(ctx, roleAdmin)
 	require.Error(t, err)
 	assert.EqualError(t, role.ErrRoleWithSameLevelAlreadyExists, err.Error())
 
-	err = factory.CreateRole(roleModerator)
+	err = factory.CreateRole(ctx, roleModerator)
 	require.NoError(t, err)
 
-	err = factory.CreateRole(roleModerator)
+	err = factory.CreateRole(ctx, roleModerator)
 	require.Error(t, err)
 	assert.EqualError(t, role.ErrRoleWithSameLevelAlreadyExists, err.Error())
 
-	err = factory.CreateRole(roleGuest)
+	err = factory.CreateRole(ctx, roleGuest)
 	require.NoError(t, err)
 
-	err = factory.CreateRole(roleGuest)
+	err = factory.CreateRole(ctx, roleGuest)
 	require.Error(t, err)
 	assert.EqualError(t, role.ErrRoleWithSameLevelAlreadyExists, err.Error())
 }

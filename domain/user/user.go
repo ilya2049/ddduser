@@ -22,7 +22,7 @@ func newUser(
 	roleLevel auth.RoleLevel,
 	roleRepository RoleRepository,
 ) (User, error) {
-	role, err := roleRepository.GetByLevel(roleLevel)
+	role, err := roleRepository.GetByLevel(context.TODO(), roleLevel)
 	if err != nil {
 		return User{}, err
 	}

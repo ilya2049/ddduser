@@ -1,6 +1,7 @@
 package role
 
 import (
+	"context"
 	"ddduser/domain/auth"
 	"errors"
 )
@@ -53,6 +54,6 @@ func (r Role) ID() ID {
 }
 
 type Repository interface {
-	Add(Role) (ID, error)
-	HasRoleWithLevel(roleLevel auth.RoleLevel) (bool, error)
+	Add(context.Context, Role) (ID, error)
+	HasRoleWithLevel(context.Context, auth.RoleLevel) (bool, error)
 }

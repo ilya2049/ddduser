@@ -14,11 +14,13 @@ import (
 )
 
 func TestUserRepository_List(t *testing.T) {
+	ctx := context.Background()
+
 	userRepository := memory.UserRepository{}
 	roleRepository := memory.RoleRepository{}
 
 	roleCreator := role.NewCreator(&roleRepository)
-	err := roleCreator.CreateTestRoles()
+	err := roleCreator.CreateTestRoles(ctx)
 	require.NoError(t, err)
 
 	adminCreator := user.NewAdminCreator(&roleRepository, &userRepository)
@@ -26,7 +28,7 @@ func TestUserRepository_List(t *testing.T) {
 	userAdminCredentials, err := user.NewCredentials(dict.NameLeslie, dict.EmailLaslie)
 	require.NoError(t, err)
 
-	userAdmin, err := adminCreator.CreateAdmin(userAdminCredentials)
+	userAdmin, err := adminCreator.CreateAdmin(ctx, userAdminCredentials)
 	require.NoError(t, err)
 
 	userSamCredentials, err := user.NewCredentials(dict.NameSam, dict.EmailSam)
@@ -40,8 +42,6 @@ func TestUserRepository_List(t *testing.T) {
 
 	userJames, err := userSam.NewChildUser(userJamesCredentials, auth.RoleLevelGuest, &roleRepository)
 	require.NoError(t, err)
-
-	ctx := context.Background()
 
 	userSamID, _ := userRepository.Add(ctx, userSam)
 	userJamesID, _ := userRepository.Add(ctx, userJames)
@@ -65,11 +65,13 @@ func TestUserRepository_List(t *testing.T) {
 }
 
 func TestUserRepository_Delete(t *testing.T) {
+	ctx := context.Background()
+
 	userRepository := memory.UserRepository{}
 	roleRepository := memory.RoleRepository{}
 
 	roleCreator := role.NewCreator(&roleRepository)
-	err := roleCreator.CreateTestRoles()
+	err := roleCreator.CreateTestRoles(ctx)
 	require.NoError(t, err)
 
 	adminCreator := user.NewAdminCreator(&roleRepository, &userRepository)
@@ -77,7 +79,7 @@ func TestUserRepository_Delete(t *testing.T) {
 	userAdminCredentials, err := user.NewCredentials(dict.NameLeslie, dict.EmailLaslie)
 	require.NoError(t, err)
 
-	userAdmin, err := adminCreator.CreateAdmin(userAdminCredentials)
+	userAdmin, err := adminCreator.CreateAdmin(ctx, userAdminCredentials)
 	require.NoError(t, err)
 
 	userSamCredentials, err := user.NewCredentials(dict.NameSam, dict.EmailSam)
@@ -91,8 +93,6 @@ func TestUserRepository_Delete(t *testing.T) {
 
 	userJames, err := userSam.NewChildUser(userJamesCredentials, auth.RoleLevelGuest, &roleRepository)
 	require.NoError(t, err)
-
-	ctx := context.Background()
 
 	userSamID, _ := userRepository.Add(ctx, userSam)
 	_, _ = userRepository.Add(ctx, userJames)
@@ -108,11 +108,13 @@ func TestUserRepository_Delete(t *testing.T) {
 }
 
 func TestUserRepository_Update(t *testing.T) {
+	ctx := context.Background()
+
 	userRepository := memory.UserRepository{}
 	roleRepository := memory.RoleRepository{}
 
 	roleCreator := role.NewCreator(&roleRepository)
-	err := roleCreator.CreateTestRoles()
+	err := roleCreator.CreateTestRoles(ctx)
 	require.NoError(t, err)
 
 	adminCreator := user.NewAdminCreator(&roleRepository, &userRepository)
@@ -120,7 +122,7 @@ func TestUserRepository_Update(t *testing.T) {
 	userAdminCredentials, err := user.NewCredentials(dict.NameLeslie, dict.EmailLaslie)
 	require.NoError(t, err)
 
-	userAdmin, err := adminCreator.CreateAdmin(userAdminCredentials)
+	userAdmin, err := adminCreator.CreateAdmin(ctx, userAdminCredentials)
 	require.NoError(t, err)
 
 	userSamCredentials, err := user.NewCredentials(dict.NameSam, dict.EmailSam)
@@ -128,8 +130,6 @@ func TestUserRepository_Update(t *testing.T) {
 
 	userSam, err := userAdmin.NewChildUser(userSamCredentials, auth.RoleLevelModerator, &roleRepository)
 	require.NoError(t, err)
-
-	ctx := context.Background()
 
 	userSamID, _ := userRepository.Add(ctx, userSam)
 

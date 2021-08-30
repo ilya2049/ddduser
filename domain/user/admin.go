@@ -23,13 +23,11 @@ type AdminCreator struct {
 	userRepository Repository
 }
 
-func (ac *AdminCreator) CreateAdmin(credentials Credentials) (User, error) {
+func (ac *AdminCreator) CreateAdmin(ctx context.Context, credentials Credentials) (User, error) {
 	admin, err := NewAdmin(credentials, ac.roleRepository)
 	if err != nil {
 		return User{}, err
 	}
-
-	ctx := context.Background()
 
 	_, err = ac.userRepository.GetAdmin(ctx)
 
