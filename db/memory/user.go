@@ -1,6 +1,7 @@
 package memory
 
 import (
+	"context"
 	"ddduser/domain/auth"
 	"ddduser/domain/user"
 )
@@ -11,7 +12,7 @@ type UserRepository struct {
 	users []user.User
 }
 
-func (r *UserRepository) Add(u user.User) (user.ID, error) {
+func (r *UserRepository) Add(_ context.Context, u user.User) (user.ID, error) {
 	r.lastID++
 
 	u.Identify(r.lastID)
@@ -21,7 +22,7 @@ func (r *UserRepository) Add(u user.User) (user.ID, error) {
 	return u.ID(), nil
 }
 
-func (r *UserRepository) Update(u user.User) error {
+func (r *UserRepository) Update(_ context.Context, u user.User) error {
 	var userIdx = -1
 
 	for i, usr := range r.users {
@@ -41,7 +42,7 @@ func (r *UserRepository) Update(u user.User) error {
 	return nil
 }
 
-func (r *UserRepository) Delete(id user.ID) error {
+func (r *UserRepository) Delete(_ context.Context, id user.ID) error {
 	var userIdx = -1
 
 	for i, usr := range r.users {
@@ -65,7 +66,7 @@ func (r *UserRepository) Delete(id user.ID) error {
 	return nil
 }
 
-func (r *UserRepository) Get(id user.ID) (user.User, error) {
+func (r *UserRepository) Get(_ context.Context, id user.ID) (user.User, error) {
 	for _, usr := range r.users {
 		if usr.ID() == id {
 			return usr, nil
@@ -75,7 +76,7 @@ func (r *UserRepository) Get(id user.ID) (user.User, error) {
 	return user.User{}, user.ErrUserDoesNotExist
 }
 
-func (r *UserRepository) GetAdmin() (user.User, error) {
+func (r *UserRepository) GetAdmin(_ context.Context) (user.User, error) {
 	for _, usr := range r.users {
 		if usr.Role().Level() == auth.RoleLevelAdmin {
 			return usr, nil
@@ -85,6 +86,6 @@ func (r *UserRepository) GetAdmin() (user.User, error) {
 	return user.User{}, user.ErrUserDoesNotExist
 }
 
-func (r *UserRepository) List() ([]user.User, error) {
+func (r *UserRepository) List(_ context.Context) ([]user.User, error) {
 	return append(make([]user.User, 0, len(r.users)), r.users...), nil
 }

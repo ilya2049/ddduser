@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"ddduser/domain/auth"
 	"errors"
 )
@@ -86,10 +87,10 @@ func (u User) Is(other User) bool {
 type ID = int
 
 type Repository interface {
-	Add(User) (ID, error)
-	Update(User) error
-	Delete(ID) error
-	Get(ID) (User, error)
-	GetAdmin() (User, error)
-	List() ([]User, error)
+	Add(context.Context, User) (ID, error)
+	Update(context.Context, User) error
+	Delete(context.Context, ID) error
+	Get(context.Context, ID) (User, error)
+	GetAdmin(context.Context) (User, error)
+	List(context.Context) ([]User, error)
 }

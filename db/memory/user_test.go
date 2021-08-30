@@ -1,6 +1,7 @@
 package memory_test
 
 import (
+	"context"
 	"ddduser/db/memory"
 	"ddduser/dict"
 	"ddduser/domain/auth"
@@ -40,10 +41,12 @@ func TestUserRepository_List(t *testing.T) {
 	userJames, err := userSam.NewChildUser(userJamesCredentials, auth.RoleLevelGuest, &roleRepository)
 	require.NoError(t, err)
 
-	userSamID, _ := userRepository.Add(userSam)
-	userJamesID, _ := userRepository.Add(userJames)
+	ctx := context.Background()
 
-	users, _ := userRepository.List()
+	userSamID, _ := userRepository.Add(ctx, userSam)
+	userJamesID, _ := userRepository.Add(ctx, userJames)
+
+	users, _ := userRepository.List(ctx)
 
 	const (
 		usersInRepository = 3
@@ -89,16 +92,18 @@ func TestUserRepository_Delete(t *testing.T) {
 	userJames, err := userSam.NewChildUser(userJamesCredentials, auth.RoleLevelGuest, &roleRepository)
 	require.NoError(t, err)
 
-	userSamID, _ := userRepository.Add(userSam)
-	_, _ = userRepository.Add(userJames)
+	ctx := context.Background()
 
-	_, err = userRepository.Get(userSamID)
+	userSamID, _ := userRepository.Add(ctx, userSam)
+	_, _ = userRepository.Add(ctx, userJames)
+
+	_, err = userRepository.Get(ctx, userSamID)
 	require.NoError(t, err)
 
-	err = userRepository.Delete(userSamID)
+	err = userRepository.Delete(ctx, userSamID)
 	require.NoError(t, err)
 
-	_, err = userRepository.Get(userSamID)
+	_, err = userRepository.Get(ctx, userSamID)
 	assert.EqualError(t, user.ErrUserDoesNotExist, err.Error())
 }
 
@@ -124,9 +129,11 @@ func TestUserRepository_Update(t *testing.T) {
 	userSam, err := userAdmin.NewChildUser(userSamCredentials, auth.RoleLevelModerator, &roleRepository)
 	require.NoError(t, err)
 
-	userSamID, _ := userRepository.Add(userSam)
+	ctx := context.Background()
 
-	userSam, err = userRepository.Get(userSamID)
+	userSamID, _ := userRepository.Add(ctx, userSam)
+
+	userSam, err = userRepository.Get(ctx, userSamID)
 	require.NoError(t, err)
 
 	userSamNewCredentials, err := user.NewCredentials(dict.NameSamantha, dict.EmailSam)
@@ -134,10 +141,10 @@ func TestUserRepository_Update(t *testing.T) {
 
 	userSam.UpdateCredentials(userSamNewCredentials)
 
-	err = userRepository.Update(userSam)
+	err = userRepository.Update(ctx, userSam)
 	require.NoError(t, err)
 
-	userSam, err = userRepository.Get(userSamID)
+	userSam, err = userRepository.Get(ctx, userSamID)
 	require.NoError(t, err)
 
 	assert.Equal(t, dict.NameSamantha, userSam.Credentials().Name())

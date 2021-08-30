@@ -13,7 +13,7 @@ type CRUDService struct {
 }
 
 func (s *CRUDService) CreateUser(ctx context.Context, u User) (ID, error) {
-	return s.userRepository.Add(u)
+	return s.userRepository.Add(ctx, u)
 }
 
 func (s *CRUDService) UpdateUser(ctx context.Context, cu CurrentUser, u User) error {
@@ -21,11 +21,11 @@ func (s *CRUDService) UpdateUser(ctx context.Context, cu CurrentUser, u User) er
 		return err
 	}
 
-	return s.userRepository.Update(u)
+	return s.userRepository.Update(ctx, u)
 }
 
 func (s *CRUDService) DeleteUser(ctx context.Context, cu CurrentUser, id ID) error {
-	u, err := s.userRepository.Get(id)
+	u, err := s.userRepository.Get(ctx, id)
 	if err != nil {
 		return err
 	}
@@ -34,11 +34,11 @@ func (s *CRUDService) DeleteUser(ctx context.Context, cu CurrentUser, id ID) err
 		return err
 	}
 
-	return s.userRepository.Delete(u.ID())
+	return s.userRepository.Delete(ctx, u.ID())
 }
 
 func (s *CRUDService) GetUser(ctx context.Context, cu CurrentUser, id ID) (User, error) {
-	u, err := s.userRepository.Get(id)
+	u, err := s.userRepository.Get(ctx, id)
 	if err != nil {
 		return User{}, err
 	}

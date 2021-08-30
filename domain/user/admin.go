@@ -1,6 +1,7 @@
 package user
 
 import (
+	"context"
 	"ddduser/domain/auth"
 	"errors"
 )
@@ -28,14 +29,16 @@ func (ac *AdminCreator) CreateAdmin(credentials Credentials) (User, error) {
 		return User{}, err
 	}
 
-	_, err = ac.userRepository.GetAdmin()
+	ctx := context.Background()
+
+	_, err = ac.userRepository.GetAdmin(ctx)
 
 	if err == nil {
 		return User{}, ErrOnlyOneAdmin
 	}
 
 	if errors.Is(err, ErrUserDoesNotExist) {
-		adminID, err := ac.userRepository.Add(admin)
+		adminID, err := ac.userRepository.Add(ctx, admin)
 		if err != nil {
 			return User{}, err
 		}
