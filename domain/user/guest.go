@@ -7,8 +7,8 @@ type GuestContext struct {
 }
 
 func (gc *GuestContext) NewUser(
-	name string,
-	roleLevel auth.RoleLevel,
+	_ Credentials,
+	_ auth.RoleLevel,
 ) (User, error) {
 	return User{}, ErrOperationIsForbiddenForCurrentUser
 }

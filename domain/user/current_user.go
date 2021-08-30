@@ -9,7 +9,7 @@ import (
 var ErrOperationIsForbiddenForCurrentUser = errors.New("the operation is forbidden for the current user")
 
 type CurrentUser interface {
-	NewUser(string, auth.RoleLevel) (User, error)
+	NewUser(Credentials, auth.RoleLevel) (User, error)
 	CanUpdateUser(User) error
 	CanDeleteUser(User) error
 	CanReadUser(User) error

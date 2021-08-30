@@ -22,8 +22,8 @@ type AdminCreator struct {
 	userRepository Repository
 }
 
-func (ac *AdminCreator) CreateAdmin(name string) (User, error) {
-	admin, err := NewAdmin(name, ac.roleRepository)
+func (ac *AdminCreator) CreateAdmin(credentials Credentials) (User, error) {
+	admin, err := NewAdmin(credentials, ac.roleRepository)
 	if err != nil {
 		return User{}, err
 	}
@@ -55,11 +55,11 @@ type AdminContext struct {
 }
 
 func (ac *AdminContext) NewUser(
-	name string,
+	credentials Credentials,
 	roleLevel auth.RoleLevel,
 ) (User, error) {
 	if roleLevel == auth.RoleLevelModerator {
-		return ac.admin.NewChildUser(name, roleLevel, ac.roleRepository)
+		return ac.admin.NewChildUser(credentials, roleLevel, ac.roleRepository)
 	}
 
 	return User{}, ErrOperationIsForbiddenForCurrentUser

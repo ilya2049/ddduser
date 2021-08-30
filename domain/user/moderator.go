@@ -9,11 +9,11 @@ type ModeratorContext struct {
 }
 
 func (mc *ModeratorContext) NewUser(
-	name string,
+	credentials Credentials,
 	roleLevel auth.RoleLevel,
 ) (User, error) {
 	if roleLevel == auth.RoleLevelGuest {
-		return mc.moderator.NewChildUser(name, roleLevel, mc.roleRepository)
+		return mc.moderator.NewChildUser(credentials, roleLevel, mc.roleRepository)
 	}
 
 	return User{}, ErrOperationIsForbiddenForCurrentUser

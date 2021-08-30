@@ -10,45 +10,41 @@ var (
 )
 
 func NewAdmin(
-	name string,
+	credentials Credentials,
 	roleRepository RoleRepository,
 ) (User, error) {
-	return newUser(name, auth.RoleLevelAdmin, roleRepository)
+	return newUser(credentials, auth.RoleLevelAdmin, roleRepository)
 }
 
 func newUser(
-	name string,
+	credentials Credentials,
 	roleLevel auth.RoleLevel,
 	roleRepository RoleRepository,
 ) (User, error) {
-	if name == "" {
-		return User{}, ErrNameRequired
-	}
-
 	role, err := roleRepository.GetByLevel(roleLevel)
 	if err != nil {
 		return User{}, err
 	}
 
 	return User{
-		name: name,
-		role: role,
+		credentials: credentials,
+		role:        role,
 	}, nil
 }
 
 type User struct {
-	id      ID
-	ownerID ID
-	name    string
-	role    Role
+	id          ID
+	ownerID     ID
+	credentials Credentials
+	role        Role
 }
 
 func (u User) NewChildUser(
-	name string,
+	credentials Credentials,
 	roleLevel auth.RoleLevel,
 	roleRepository RoleRepository,
 ) (User, error) {
-	u, err := newUser(name, roleLevel, roleRepository)
+	u, err := newUser(credentials, roleLevel, roleRepository)
 
 	if err != nil {
 		return User{}, err
@@ -63,8 +59,8 @@ func (u User) ID() ID {
 	return u.id
 }
 
-func (u User) Name() string {
-	return u.name
+func (u User) Credentials() Credentials {
+	return u.credentials
 }
 
 func (u User) Role() Role {
@@ -75,8 +71,8 @@ func (u *User) Identify(id ID) {
 	u.id = id
 }
 
-func (u *User) Rename(name string) {
-	u.name = name
+func (u *User) UpdateCredentials(newCredentials Credentials) {
+	u.credentials = newCredentials
 }
 
 func (u User) IsOwnedBy(other User) bool {

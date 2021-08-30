@@ -22,13 +22,22 @@ func TestUserRepository_List(t *testing.T) {
 
 	adminCreator := user.NewAdminCreator(&roleRepository, &userRepository)
 
-	userAdmin, err := adminCreator.CreateAdmin(dict.NameLeslie)
+	userAdminCredentials, err := user.NewCredentials(dict.NameLeslie, dict.EmailLaslie)
 	require.NoError(t, err)
 
-	userSam, err := userAdmin.NewChildUser(dict.NameSam, auth.RoleLevelModerator, &roleRepository)
+	userAdmin, err := adminCreator.CreateAdmin(userAdminCredentials)
 	require.NoError(t, err)
 
-	userJames, err := userSam.NewChildUser(dict.NameJames, auth.RoleLevelGuest, &roleRepository)
+	userSamCredentials, err := user.NewCredentials(dict.NameSam, dict.EmailSam)
+	require.NoError(t, err)
+
+	userSam, err := userAdmin.NewChildUser(userSamCredentials, auth.RoleLevelModerator, &roleRepository)
+	require.NoError(t, err)
+
+	userJamesCredentials, err := user.NewCredentials(dict.NameJames, dict.EmailJames)
+	require.NoError(t, err)
+
+	userJames, err := userSam.NewChildUser(userJamesCredentials, auth.RoleLevelGuest, &roleRepository)
 	require.NoError(t, err)
 
 	userSamID, _ := userRepository.Add(userSam)
@@ -47,9 +56,9 @@ func TestUserRepository_List(t *testing.T) {
 	)
 
 	require.Len(t, users, usersInRepository)
-	assert.Equal(t, users[userAdminIdx].Name(), userAdmin.Name())
-	assert.Equal(t, users[userSamIdx].Name(), userSam.Name())
-	assert.Equal(t, users[userJamesIdx].Name(), userJames.Name())
+	assert.Equal(t, users[userAdminIdx].Credentials().Name(), userAdmin.Credentials().Name())
+	assert.Equal(t, users[userSamIdx].Credentials().Name(), userSam.Credentials().Name())
+	assert.Equal(t, users[userJamesIdx].Credentials().Name(), userJames.Credentials().Name())
 }
 
 func TestUserRepository_Delete(t *testing.T) {
@@ -62,13 +71,22 @@ func TestUserRepository_Delete(t *testing.T) {
 
 	adminCreator := user.NewAdminCreator(&roleRepository, &userRepository)
 
-	userAdmin, err := adminCreator.CreateAdmin(dict.NameLeslie)
+	userAdminCredentials, err := user.NewCredentials(dict.NameLeslie, dict.EmailLaslie)
 	require.NoError(t, err)
 
-	userSam, err := userAdmin.NewChildUser(dict.NameSam, auth.RoleLevelModerator, &roleRepository)
+	userAdmin, err := adminCreator.CreateAdmin(userAdminCredentials)
 	require.NoError(t, err)
 
-	userJames, err := userSam.NewChildUser(dict.NameJames, auth.RoleLevelGuest, &roleRepository)
+	userSamCredentials, err := user.NewCredentials(dict.NameSam, dict.EmailSam)
+	require.NoError(t, err)
+
+	userSam, err := userAdmin.NewChildUser(userSamCredentials, auth.RoleLevelModerator, &roleRepository)
+	require.NoError(t, err)
+
+	userJamesCredentials, err := user.NewCredentials(dict.NameJames, dict.EmailJames)
+	require.NoError(t, err)
+
+	userJames, err := userSam.NewChildUser(userJamesCredentials, auth.RoleLevelGuest, &roleRepository)
 	require.NoError(t, err)
 
 	userSamID, _ := userRepository.Add(userSam)
@@ -94,10 +112,16 @@ func TestUserRepository_Update(t *testing.T) {
 
 	adminCreator := user.NewAdminCreator(&roleRepository, &userRepository)
 
-	userAdmin, err := adminCreator.CreateAdmin(dict.NameLeslie)
+	userAdminCredentials, err := user.NewCredentials(dict.NameLeslie, dict.EmailLaslie)
 	require.NoError(t, err)
 
-	userSam, err := userAdmin.NewChildUser(dict.NameSam, auth.RoleLevelModerator, &roleRepository)
+	userAdmin, err := adminCreator.CreateAdmin(userAdminCredentials)
+	require.NoError(t, err)
+
+	userSamCredentials, err := user.NewCredentials(dict.NameSam, dict.EmailSam)
+	require.NoError(t, err)
+
+	userSam, err := userAdmin.NewChildUser(userSamCredentials, auth.RoleLevelModerator, &roleRepository)
 	require.NoError(t, err)
 
 	userSamID, _ := userRepository.Add(userSam)
@@ -105,7 +129,10 @@ func TestUserRepository_Update(t *testing.T) {
 	userSam, err = userRepository.Get(userSamID)
 	require.NoError(t, err)
 
-	userSam.Rename(dict.NameSamantha)
+	userSamNewCredentials, err := user.NewCredentials(dict.NameSamantha, dict.EmailSam)
+	require.NoError(t, err)
+
+	userSam.UpdateCredentials(userSamNewCredentials)
 
 	err = userRepository.Update(userSam)
 	require.NoError(t, err)
@@ -113,5 +140,5 @@ func TestUserRepository_Update(t *testing.T) {
 	userSam, err = userRepository.Get(userSamID)
 	require.NoError(t, err)
 
-	assert.Equal(t, dict.NameSamantha, userSam.Name())
+	assert.Equal(t, dict.NameSamantha, userSam.Credentials().Name())
 }
